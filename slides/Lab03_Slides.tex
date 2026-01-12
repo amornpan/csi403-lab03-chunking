@@ -1,0 +1,120 @@
+% Lab 03: Text Chunking
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{listings}
+\usepackage{tikz}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    breaklines=true
+}
+
+\title{Lab 03: Text Chunking}
+\subtitle{Splitting Documents for RAG Systems}
+\author{CSI403 - Full Stack Program Development}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Why Chunking?}
+    \begin{center}
+        \textbf{LLMs have token limits!}
+    \end{center}
+    
+    \begin{itemize}
+        \item GPT-4: 8K-128K tokens
+        \item Claude: 100K-200K tokens
+        \item Local LLMs: 2K-8K tokens
+    \end{itemize}
+    
+    \vspace{0.5cm}
+    
+    \begin{block}{Solution: Split into Chunks}
+        Large Document → [Chunk 1] [Chunk 2] [Chunk 3] ...
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Simple Chunking: String Slicing}
+    \begin{lstlisting}
+text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# Slice from index 0 to 10
+chunk1 = text[0:10]   # "ABCDEFGHIJ"
+chunk2 = text[10:20]  # "KLMNOPQRST"
+chunk3 = text[20:26]  # "UVWXYZ"
+    \end{lstlisting}
+    
+    \begin{block}{Syntax: text[start:end]}
+        Returns characters from index start to end-1
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Automatic Chunking with Loop}
+    \begin{lstlisting}
+def simple_chunk(text, chunk_size):
+    chunks = []
+    for i in range(0, len(text), chunk_size):
+        chunk = text[i:i+chunk_size]
+        chunks.append(chunk)
+    return chunks
+
+result = simple_chunk("ABCDEFGHIJ", 3)
+# ['ABC', 'DEF', 'GHI', 'J']
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Chunking with Overlap}
+    \textbf{Overlap preserves context between chunks!}
+    
+    \begin{lstlisting}
+def chunk_with_overlap(text, size, overlap):
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = start + size
+        chunks.append(text[start:end])
+        start = end - overlap
+    return chunks
+
+# size=10, overlap=3
+# [ABCDEFGHIJ] [HIJKLMNOPQ] [OPQRSTUVWX]
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Summary}
+    \begin{itemize}
+        \item \textbf{Chunking} = splitting text into smaller pieces
+        \item Use \texttt{text[start:end]} for slicing
+        \item Use \texttt{range(0, len(text), chunk\_size)} for looping
+        \item \textbf{Overlap} helps maintain context
+    \end{itemize}
+    
+    \begin{block}{Next Lab}
+        Lab 04: Text Search - finding relevant chunks!
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \begin{center}
+        \Huge \textbf{Questions?}
+        
+        \vspace{1cm}
+        
+        \Large Let's start the Tutorial!
+    \end{center}
+\end{frame}
+
+\end{document}
